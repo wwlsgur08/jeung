@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자질 별자리 시각화</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="visualization-area">
+            <!-- SVG를 추가하여 선을 그릴 수 있게 함 -->
+            <div class="star-container">
+                <div class="night-sky-bg"></div>
+                <svg id="connectionSvg" width="100%" height="100%">
+                    <!-- 선은 JavaScript로 여기에 추가됨 -->
+                </svg>
+                <div class="star-grid" id="starGrid">
+                    <!-- 별 그리드는 JavaScript로 생성됨 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-panel">
+            <!-- 검색창 추가 -->
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="자질 검색..." class="search-input">
+                <button id="clearSearchBtn" class="clear-search-btn">✕</button>
+            </div>
+            
+            <div class="trait-list" id="traitList">
+                <!-- 자질 목록은 JavaScript로 생성됨 -->
+            </div>
+            
+            <div class="size-controls">
+                <h3>크기 조절</h3>
+                <div class="size-buttons">
+                    <button class="size-btn" data-size="0">0</button>
+                    <button class="size-btn" data-size="1">1</button>
+                    <button class="size-btn" data-size="2">2</button>
+                    <button class="size-btn" data-size="3">3</button>
+                    <button class="size-btn" data-size="4">4</button>
+                    <button class="size-btn" data-size="5">5</button>
+                    <button class="size-btn" data-size="6">6</button>
+                </div>
+            </div>
+            
+            <!-- 선 그리기 모드 전환 버튼 추가 -->
+            <div class="line-controls">
+                <h3>선 연결 모드</h3>
+                <button id="drawModeBtn" class="mode-btn">선 그리기 모드 켜기</button>
+                <button id="clearLinesBtn" class="mode-btn">모든 선 지우기</button>
+            </div>
+            
+            <!-- 초기화 버튼 추가 -->
+            <div class="reset-controls">
+                <h3>초기화</h3>
+                <button id="resetAllBtn" class="mode-btn reset-btn">별자리 초기화</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

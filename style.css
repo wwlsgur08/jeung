@@ -1,0 +1,334 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0a0a0f;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.visualization-area {
+    flex: 1;
+    padding: 20px;
+    background-color: transparent;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 별 컨테이너와 SVG 위치 설정 */
+.star-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* 밤하늘 배경 */
+.night-sky-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #0f1222, #090a15);
+    z-index: 0;
+}
+
+/* 작은 별이 빛나는 효과 추가 */
+.night-sky-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(1px 1px at 25% 15%, white, rgba(255,255,255,0)),
+        radial-gradient(1px 1px at 50% 50%, white, rgba(255,255,255,0)),
+        radial-gradient(1px 1px at 75% 25%, white, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 20% 60%, white, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 40% 80%, white, rgba(255,255,255,0)),
+        radial-gradient(2px 2px at 70% 70%, white, rgba(255,255,255,0)),
+        radial-gradient(1px 1px at 85% 10%, white, rgba(255,255,255,0));
+    background-repeat: repeat;
+    background-size: 250px 250px;
+    opacity: 0.3;
+}
+
+#connectionSvg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none; /* SVG가 별 클릭을 방해하지 않도록 */
+}
+
+.star-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+.star {
+    position: relative;
+    opacity: 0;
+    transition: opacity 1s ease, transform 0.5s ease;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 별 모양 대신 하얀 원으로 변경 */
+.star::before {
+    content: "";
+    display: block;
+    width: 12px; /* 기본 크기 */
+    height: 12px;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    transition: width 0.5s, height 0.5s;
+}
+
+.control-panel {
+    width: 300px;
+    padding: 20px;
+    background-color: rgba(15, 18, 34, 0.9);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* 검색창 스타일링 */
+.search-container {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 35px 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 16px;
+    cursor: pointer;
+    display: none;
+}
+
+.clear-search-btn.visible {
+    display: block;
+}
+
+.clear-search-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.trait-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* 스크롤바 스타일링 */
+.trait-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.trait-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.trait-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.trait-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.trait-item {
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.trait-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.trait-item.selected {
+    background-color: rgba(0, 123, 255, 0.7);
+}
+
+.trait-item.hidden {
+    display: none;
+}
+
+.size-controls, .line-controls, .reset-controls {
+    margin-top: 20px;
+}
+
+h3 {
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.size-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+/* 크기 버튼 스타일 변경 - 누르면 일시적으로 눌렸다 떼지는 효과 */
+.size-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s, background-color 0.3s;
+}
+
+.size-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 버튼 클릭 효과 */
+.size-btn:active {
+    transform: scale(0.9);
+    background-color: rgba(0, 123, 255, 0.7);
+}
+
+/* 버튼 클릭 시 물결 효과 */
+.size-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, .7) 0%, rgba(255, 255, 255, 0) 70%);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform .4s, opacity .5s;
+}
+
+.size-btn.clicked::after {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* 선 그리기 모드 버튼 스타일 */
+.mode-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.mode-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.mode-btn.active {
+    background-color: rgba(40, 167, 69, 0.7);
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+}
+
+/* 초기화 버튼 특별 스타일 */
+.reset-btn {
+    background-color: rgba(220, 53, 69, 0.7);
+}
+
+.reset-btn:hover {
+    background-color: rgba(220, 53, 69, 0.9);
+}
+
+/* 원의 크기 클래스 */
+.star.size-1::before { width: 6px; height: 6px; }
+.star.size-2::before { width: 9px; height: 9px; }
+.star.size-3::before { width: 12px; height: 12px; }
+.star.size-4::before { width: 16px; height: 16px; }
+.star.size-5::before { width: 20px; height: 20px; }
+.star.size-6::before { width: 24px; height: 24px; }
